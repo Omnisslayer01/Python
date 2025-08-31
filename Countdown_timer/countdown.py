@@ -13,7 +13,6 @@ for i in range(userinput,0,-1):
 
 print("TIMES UP!")
 
-
 pygame.mixer.init()
 pygame.mixer.music.load(r"C:\Users\DELL\Downloads\nightcore-life-is-fun-by-theodd1sout-1.mp3")
 pygame.mixer.music.play(0)

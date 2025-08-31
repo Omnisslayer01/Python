@@ -19,6 +19,24 @@ def update_clock():
     time_label.configure(text=current_time)
     app.after(1000,update_clock)
 
+control_frame=customtkinter.CTkFrame(master=app)
+control_frame.pack(pady=10)
+
+hours=[f"{i:02}" for i in range(0,24)]
+minutes=[f"{i:02}"for i in range(0,60)]
+
+hour_menu=customtkinter.CTkComboBox(master=control_frame,values=hours)
+hour_menu.pack(side="left", pady=10)
+hour_menu.set("- -")
+
+minute_menu=customtkinter.CTkComboBox(master=control_frame,values=minutes)
+minute_menu.pack(side="left", pady=10)
+minute_menu.set("- -")
+
+set_alarm=customtkinter.CTkButton(master=control_frame,corner_radius=15,text="Set Alarm")
+set_alarm.pack(side="bottom",pady=20)
+
+
 update_clock()
 
 app.mainloop()

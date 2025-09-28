@@ -1,11 +1,9 @@
 import time
 import pygame
-import msvcrt
 import customtkinter
-import sys
 import threading
 
-
+pygame.mixer.init()
 alarm_time=""
 alarm_status=False
 
@@ -15,22 +13,28 @@ def update_clock():
     current_time=time.strftime("%H:%M:%S")
     time_label.configure(text=current_time)
     app.after(1000,update_clock)
-    list=alarm_time.split(":")
-    print(list)
-    if current_time.split(":")[0]==list[0]:
-        if current_time.split(":")[1]==list[1]:
-            alarm_status=True
-            list=[]
-            alarm_sound()
         
+def check_alarm():
+    global alarm_status
+    while True:
+        if alarm_status:
+            current_time=time.strftime("%H:%M")
 
-def alarm_sound():
-    if alarm_status==True:
-        pygame.mixer.init()
-        alarm_sound=pygame.mixer.Sound(r"C:\Users\DELL\Downloads\mixkit-classic-alarm-995.wav")
-        alarm_sound.play()    
+            if current_time==alarm_time:
+                print("ALARM! Wake Up!")
+                pygame.mixer.music.load(r"C:\Users\DELL\Downloads\mixkit-classic-alarm-995.wav")
+                pygame.mixer.music.play(loops=-1)
+                alarm_status=False
+        time.sleep(1) 
+
+def stop_alarm_sound():
+    pygame.mixer.music.stop()
+    print("Alarm stopped")
+
 
 def set_alarm_action():
+    global alarm_status
+    alarm_status=True
     selected_hour=hour_menu.get()
     selected_min=minute_menu.get()
     print(f"Alarm set for {selected_hour}:{selected_min}")
@@ -43,7 +47,7 @@ customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("dark-blue")
 app=customtkinter.CTk()
 app.title("My first clock App")
-app.geometry("450x300")
+app.geometry("550x300")
 
 frame=customtkinter.CTkFrame(master=app,corner_radius=15,fg_color="#1E1E2E")
 frame.pack(pady=20)
@@ -67,8 +71,13 @@ minute_menu.pack(side="left", pady=10)
 minute_menu.set("--")
 
 set_alarm=customtkinter.CTkButton(master=control_frame,corner_radius=15,text="Set Alarm",command=set_alarm_action)
-set_alarm.pack(side="bottom",pady=20)
+set_alarm.pack(side="left")
 
+stop_alarm=customtkinter.CTkButton(master=control_frame,corner_radius=15,text="Stop",command=stop_alarm_sound)
+stop_alarm.pack(side="left")
+
+alarm_thread=threading.Thread(target=check_alarm,daemon=True)
+alarm_thread.start()
 
 update_clock()
 
